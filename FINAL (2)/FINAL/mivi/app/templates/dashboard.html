@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premedics Dashboard</title>
+    <style>
+        /* Reset default styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        body {
+            background-color: #f7f7f7;
+            display: flex;
+            align-items: center; /* Center vertically */
+            justify-content: center; /* Center horizontally */
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* 2:1 ratio for dashboard and chatbot */
+            width: 90%;
+            max-width: 1200px;
+            height: 90%;
+            background-color: #fff;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .dashboard {
+            background-color: #394c54;
+            color: white;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Center horizontally */
+            justify-content: center; /* Center vertically */
+            text-align: center; /* Center text */
+        }
+
+        .dashboard img {
+            width: 150px; /* Set the logo width */
+            height: auto;
+            margin-bottom: 20px; /* Space between logo and text */
+            border-radius: 50%; /* Example styling, can be adjusted */
+        }
+
+        .dashboard h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .dashboard .info {
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .dashboard .info span {
+            font-weight: bold;
+        }
+
+        .chatbot {
+            background-color: #fff;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body data-email="{{ email }}"> <!-- Inject email from Flask -->
+    <div class="container">
+        <!-- Left side: Dashboard -->
+        <div class="dashboard">
+            <!-- Centered Logo Image -->
+            <img src="https://lalitha0718.neocities.org/Screenshot_2024-09-06_170930-removebg-preview%20(1).png" alt="Premedics Logo"> <!-- Replace with your actual logo image URL -->
+            <h1>Premedics Dashboard</h1>
+            <div class="info">
+                <span>Name:</span> <span id="nameDisplay"></span>
+            </div>
+            <div class="info">
+                <span>Age:</span> <span id="ageDisplay"></span>
+            </div>
+            <div class="info">
+                <span>Height:</span> <span id="heightDisplay"></span> cm
+            </div>
+            <div class="info">
+                <span>Weight:</span> <span id="weightDisplay"></span> kg
+            </div>
+            <div class="info">
+                <span>Blood group:</span> <span id="bloodGroup"></span>
+            </div>
+    
+            <div class="info">
+                <span>Blood Pressure:</span> <span id="bpDisplay"></span>
+            </div>
+            <div class="info">
+                <span>Is Diabetic:</span> <span id="diabetic"></span>
+            </div>
+            <div class="info">
+                <span>Other Issues:</span> <span id="issuesDisplay"></span>
+            </div>
+        </div>
+
+        <!-- Right side: Chatbot -->
+        <iframe src="https://copilotstudio.microsoft.com/environments/Default-6b8b8296-bdff-4ad8-93ad-84bcbf3842f5/bots/cr88c_healthcareAssistant/webchat?__version__=2" frameborder="0"></iframe>
+    </div>
+
+    <script>
+    async function loadUserData() {
+        const userEmail = document.body.dataset.email; // Retrieve email from Flask template
+
+        if (!userEmail) {
+            alert('User email not found!');
+            return;
+        }
+
+        try {
+            const response = await fetch(`/get_user_data?email=${encodeURIComponent(userEmail)}`);
+            if (response.ok) {
+                const userData = await response.json();
+                document.getElementById('nameDisplay').innerText = userData.name || 'N/A';
+                document.getElementById('ageDisplay').innerText = userData.age || 'N/A';
+                document.getElementById('heightDisplay').innerText = userData.height || 'N/A';
+                document.getElementById('weightDisplay').innerText = userData.weight || 'N/A';
+                document.getElementById('diabetic').innerText = userData.isDiabetic || 'N/A';
+                document.getElementById('bpDisplay').innerText = userData.bp || 'N/A';
+                document.getElementById('bloodGroup').innerText = userData.bloodGroup || 'N/A';
+                document.getElementById('issuesDisplay').innerText = userData.medicalHistory || 'N/A';
+            } else {
+                alert('Failed to load user data.');
+            }
+        } catch (error) {
+            console.error('Error fetching user data:', error);
+        }
+    }
+
+    // Load user data when the page loads
+    window.onload = loadUserData;
+    </script>
+</body>
+</html>

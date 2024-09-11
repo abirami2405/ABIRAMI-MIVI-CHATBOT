@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+
+        /* General styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        body {
+            background-color: #f3f4f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background-color: #fff;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            display: flex;
+            overflow: hidden;
+            flex-wrap: wrap; /* Responsive design */
+        }
+
+        .left-panel {
+            background-color: #2a3d45;
+            color: white;
+            width: 100%;
+            max-width: 450px;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .left-panel img {
+            width: 80%;
+            height: auto;
+            margin-bottom: 20px;
+            border-radius: 10px;
+        }
+
+        .left-panel h1 {
+            margin-bottom: 15px;
+            font-size: 1.8em;
+            font-weight: bold;
+        }
+
+        .left-panel p {
+            margin-bottom: 20px;
+            font-size: 1em;
+            opacity: 0.8;
+        }
+
+        .right-panel {
+            width: 100%;
+            max-width: 450px;
+            padding: 40px;
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .right-panel h2 {
+            margin-bottom: 30px;
+            font-size: 2em;
+            color: #333;
+        }
+
+        .right-panel form {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 15px; /* Improved spacing */
+        }
+
+        .right-panel input,
+        .right-panel select,
+        .right-panel textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        .right-panel input:focus,
+        .right-panel select:focus,
+        .right-panel textarea:focus {
+            border-color: #2a3d45;
+            outline: none;
+        }
+
+        .right-panel button {
+            width: 100%;
+            padding: 12px;
+            background-color: #2a3d45;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s;
+        }
+
+        .right-panel button:hover {
+            background-color: #1e2e36;
+        }
+
+        .error {
+            color: red;
+            margin-top: 10px;
+            font-size: 0.9em;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .left-panel,
+            .right-panel {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="left-panel">
+            <img src="https://lalitha0718.neocities.org/Screenshot_2024-09-06_170930-removebg-preview%20(1).png" alt="Logo">
+            <h1>Welcome to the MiVii Chat Bot</h1>
+            <p>Your AI assistant</p>
+        </div>
+        <div class="right-panel">
+            <h2>Sign Up</h2>
+            <form id="signupForm" onsubmit="registerUser(event)" method="post">
+                <input type="text" id="signupName" placeholder="Name" required>
+                <input type="email" id="signupEmail" placeholder="Enter E-mail" required>
+                <input type="password" id="signupPassword" placeholder="Enter Password" required>
+                <input type="number" id="signupAge" placeholder="Age" required min="1" max="120">
+                <input type="number" id="signupWeight" placeholder="Weight (in kg)" required min="1">
+                <input type="number" id="signupHeight" placeholder="Height (in cm)" required min="50" max="250">
+                <input type="gender" id="signupBP" placeholder="Enter your gender" required>
+                <select id="signupBloodGroup" required>
+                    <option value="" disabled selected>Select Blood Group</option>
+                    <option value="A+">A+</option>
+                    <option value="A-">A-</option>
+                    <option value="B+">B+</option>
+                    <option value="B-">B-</option>
+                    <option value="AB+">AB+</option>
+                    <option value="AB-">AB-</option>
+                    <option value="O+">O+</option>
+                    <option value="O-">O-</option>
+                </select>
+                <label for="isDiabetic">Are you diabetic?</label>
+                <select id="isDiabetic" required>
+                    <option value="" disabled selected>Choose an option</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+                <textarea id="medicalHistory" placeholder="Medical History (if any)" rows="2"></textarea>
+                <button type="submit" class="sign-up-button">Register</button>
+            </form>
+            <p class="error" id="errorMessage"></p>
+        </div>
+    </div>
+
+    <script>
+        // Function to validate email and password
+        function validateEmail(email) {
+            const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+            return emailPattern.test(email);
+        }
+
+        function validatePassword(password) {
+            // Password must be at least 8 characters long and include one number and one special character
+            const passwordPattern = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,}$/;
+            return passwordPattern.test(password);
+        }
+
+        // Function to handle Sign-Up (registration) with field validation
+        async function registerUser(event) {
+            event.preventDefault();
+
+            const name = document.getElementById('signupName').value;
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            const age = document.getElementById('signupAge').value;
+            const weight = document.getElementById('signupWeight').value;
+            const height = document.getElementById('signupHeight').value;
+            const gender = document.getElementById('signupBP').value;
+            const bloodGroup = document.getElementById('signupBloodGroup').value;
+            const isDiabetic = document.getElementById('isDiabetic').value;
+            const medicalHistory = document.getElementById('medicalHistory').value;
+
+            const errorMessage = document.getElementById('errorMessage');
+
+            // Clear previous errors
+            errorMessage.textContent = '';
+
+            // Validate email and password
+            if (!validateEmail(email)) {
+                errorMessage.textContent = 'Invalid email format!';
+                return;
+            }
+            if (!validatePassword(password)) {
+                errorMessage.textContent = 'Password must be at least 8 characters long and include one number and one special character!';
+                return;
+            }
+
+            // Validate blood pressure format
+            if (!/^\d{2,3}\/\d{2,3}$/.test(bp)) {
+                errorMessage.textContent = 'Blood pressure must be in the format XXX/XX.';
+                return;
+            }
+
+            // Prepare data for the backend
+            const userData = {
+                name: name,
+                email: email,
+                password: password,
+                age: age,
+                weight: weight,
+                height: height,
+                bp: bp,
+                bloodGroup: bloodGroup,
+                isDiabetic: isDiabetic,
+                medicalHistory: medicalHistory
+            };
+
+            try {
+                const response = await fetch('/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(userData)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    alert('Registration successful! Redirecting to dashboard...');
+                    window.location.href = '/dashboard';  // Replace with your dashboard URL
+                } else {
+                    errorMessage.textContent = result.message || 'An error occurred!';
+                }
+            } catch (error) {
+                errorMessage.textContent = 'Network error!';
+            }
+        }
+    </script>
+</body>
+
+</html>

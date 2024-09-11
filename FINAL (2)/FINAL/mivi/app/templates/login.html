@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="/app/static/css/style.css"> <!-- Link to the external CSS -->
+    <link rel="icon" href="/app/static/img/logo.png" type="image/png">
+    <title>Login & Register Page</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+
+.center-image {
+    width: 350px;
+    height: 300px;
+    object-fit: contain;
+    border-radius: 10px;
+    margin: auto;
+    margin-top: -20px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+}
+
+body {
+    background-color: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.container {
+    width: 900px;
+    height: 550px;
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    display: flex;
+    overflow: hidden;
+}
+
+.left-panel {
+    background-color: #2a3d45;
+    color: white;
+    width: 50%;
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.left-panel h1 {
+    margin-bottom: 10px;
+    font-size: 2em;
+    font-weight: bold;
+}
+
+.left-panel p {
+    margin-bottom: 20px;
+    font-size: 1em;
+}
+
+.right-panel {
+    width: 50%;
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background-color: white;
+}
+
+.right-panel h1 {
+    margin-bottom: 30px;
+    font-size: 2em;
+    color: #333;
+}
+
+.right-panel form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.right-panel form input {
+    width: 80%;
+    padding: 12px;
+    margin: 15px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+}
+
+.sign-in-button {
+    padding: 10px 30px;
+    background-color: white;
+    color: #ff1a1a;
+    border: 2px solid white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+    font-size: 1em;
+}
+
+.sign-in-button:hover {
+    background-color: #ff1a1a;
+    color: white;
+    border: 2px solid white;
+}
+
+.sign-up-button {
+    padding: 10px 50px;
+    background-color: #2a3d45;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: 0.3s;
+}
+
+.sign-up-button:hover {
+    background-color: white;
+    color: #2a3d45;
+    border: 2px solid #2a3d45;
+}
+
+.error {
+    color: red;
+    margin: 10px 0;
+}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="left-panel">
+            <img src="https://lalitha0718.neocities.org/Screenshot_2024-09-06_170930-removebg-preview%20(1).png" alt="Logo" class="center-image">
+            <h1>Welcome to the MiVii Chat Bot</h1>
+            <p>Your AI assistant</p>
+        </div>
+        <div class="right-panel">
+            <h1>Sign In</h1>
+            <form id="signinForm" onsubmit="verifySignIn(event)">
+                <input type="text" id="signinName" placeholder="Name" required>
+                <input type="email" id="signinEmail" placeholder="Enter E-mail" required>
+                <input type="password" id="signinPassword" placeholder="Enter Password" required>
+                <p class="error" id="errorMessage"></p>
+                <button type="submit" class="sign-up-button">Sign In</button>
+                <br> <hr> <br>
+            
+
+                <button class="sign-up-button" onclick="redirectToSignUp()">Sign Up</button>
+            </form>
+            <br><hr><br>
+            
+        </div>
+    </div>
+
+    <script>
+        function validateEmail(email) {
+            const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+            return emailPattern.test(email);
+        }
+
+        function validatePassword(password) {
+            const passwordPattern = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,}$/;
+            return passwordPattern.test(password);
+        }
+
+        async function verifySignIn(event) {
+            event.preventDefault(); // Prevent form from submitting and refreshing page
+
+            const name = document.getElementById('signinName').value;
+            const email = document.getElementById('signinEmail').value;
+            const password = document.getElementById('signinPassword').value;
+            const errorMessage = document.getElementById('errorMessage');
+
+            // Clear previous errors
+            errorMessage.textContent = '';
+
+            // Validate email and password
+            if (!validateEmail(email)) {
+                errorMessage.textContent = 'Invalid email format!';
+                return;
+            }
+            if (!validatePassword(password)) {
+                errorMessage.textContent = 'Password must be at least 8 characters long and include one number and one special character!';
+                return;
+            }
+
+            // Check user credentials against the server
+            try {
+                const response = await fetch('/signin', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ name, email, password })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                   
+                    // Redirect to dashboard or another page
+                    window.location.href = '/dashboard'; // Replace with your actual dashboard URL
+                } else {
+                    errorMessage.textContent = result.message || 'Invalid credentials. Please try again.';
+                }
+            } catch (error) {
+                errorMessage.textContent = 'Network error!';
+            }
+        }
+
+        function redirectToSignUp() {
+            window.location.href = '/signup'; // Change this URL to your actual signup page
+        }
+    </script>
+</body>
+</html>
